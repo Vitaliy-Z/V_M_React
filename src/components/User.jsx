@@ -4,6 +4,10 @@ import API from "../api";
 export default function Users() {
   const [users, setUsers] = useState(API.users.fetchAll());
 
+  const classesOfTitle =
+    users.length === 0
+      ? "d-none"
+      : "table table-striped table-hover container-lg";
   const handleDeleteUserBtn = (event) => {
     const item = users.filter((user) => user._id !== event.target.value);
     setUsers(item);
@@ -29,10 +33,10 @@ export default function Users() {
             users.length === 0 ? "badge bg-warning" : "badge bg-primary"
           }
         >
-          {title()} тусянет с тобой сегодня
+          {title()} тусанёт с тобой сегодня
         </span>
       </h1>
-      <table className="table table-striped table-hover container-lg">
+      <table className={classesOfTitle}>
         <thead>
           <tr>
             <th scope="col">#</th>
