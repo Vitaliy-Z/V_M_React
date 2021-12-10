@@ -1,25 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
+import _ from "lodash";
+import PropTypes from "prop-types";
+import Pagination from "./Pagination";
 import User from "./User";
 
 export default function UsersList({ users, setUsers }) {
-  const handleDeleteUserBtn = (event) => {
-    const item = users.filter((user) => user._id !== event.target.id);
-    setUsers(item);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 3;
+  const cropUsers = _.slice(
+    users,
+    pageSize * currentPage - pageSize,
+    pageSize * currentPage
+  );
+
+  if (users.length === 0) {
+    return null;
+  }
+
+  const handleDeleteUserBtn = event => {
+    const updatedUsers = users.filter(user => user._id !== event.target.id);
+    setUsers(updatedUsers);
   };
-  const handleCheckBookmark = (id) => {
-    const item = users.map((user) => {
+  const handleCheckBookmark = id => {
+    const updatedUsers = users.map(user => {
       if (user._id === id) {
         user.bookmark = !user.bookmark;
       }
       return user;
     });
-    setUsers(item);
+    setUsers(updatedUsers);
   };
 
-  if (users.length === 0) {
-    return <></>;
-  } else {
-    return (
+  return (
+    <>
       <table className="table table-striped table-hover">
         <thead>
           <tr>
@@ -34,7 +47,7 @@ export default function UsersList({ users, setUsers }) {
           </tr>
         </thead>
         <tbody>
-          {users.map((user, indx) => (
+          {cropUsers.map((user, indx) => (
             <User
               key={user._id}
               indx={indx}
@@ -46,6 +59,17 @@ export default function UsersList({ users, setUsers }) {
           ))}
         </tbody>
       </table>
-    );
-  }
+      <Pagination
+        countItems={users.length}
+        pageSize={pageSize}
+        currentPage={currentPage}
+        onChangePage={setCurrentPage}
+      />
+    </>
+  );
 }
+
+UsersList.propTypes = {
+  users: PropTypes.arrayOf(PropTypes.object).isRequired,
+  setUsers: PropTypes.func.isRequired
+};

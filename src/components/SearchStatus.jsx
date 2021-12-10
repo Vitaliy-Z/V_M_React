@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export default function SearchStatus({ length }) {
   let title = `${length} человек тусaнет с тобой сегодня`;
@@ -6,10 +7,10 @@ export default function SearchStatus({ length }) {
   if (length === 0) {
     title = "Никто НЕ тусaнет с тобой сегодня";
   }
-  if (1 < length && length < 5) {
+  if (length > 1 && length < 5) {
     title = `${length} человекa тусaнет с тобой сегодня`;
   }
-  if (length > 20 && 1 < length % 10 && length % 10 < 5) {
+  if (length > 20 && length % 10 > 1 && length % 10 < 5) {
     title = `${length} человекa тусaнет с тобой сегодня`;
   }
 
@@ -21,3 +22,7 @@ export default function SearchStatus({ length }) {
     </h1>
   );
 }
+
+SearchStatus.propTypes = {
+  length: PropTypes.number.isRequired
+};

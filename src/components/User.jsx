@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import BookMark from "./Bookmark";
 import Qualitie from "./Qualitie";
 
@@ -12,14 +13,14 @@ export default function User({
   completedMeetings,
   rate,
   bookmark,
-  handleCheckBookmark,
+  handleCheckBookmark
 }) {
   return (
     <tr>
       <th scope="row">{indx + 1}</th>
       <td>{name}</td>
       <td>
-        {qualities.map((qualiti) => (
+        {qualities.map(qualiti => (
           <Qualitie key={qualiti._id} {...qualiti} />
         ))}
       </td>
@@ -46,3 +47,16 @@ export default function User({
     </tr>
   );
 }
+
+User.propTypes = {
+  indx: PropTypes.number,
+  handleDeleteUserBtn: PropTypes.func.isRequired,
+  _id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  qualities: PropTypes.arrayOf(PropTypes.object),
+  profession: PropTypes.object,
+  completedMeetings: PropTypes.number,
+  rate: PropTypes.number,
+  bookmark: PropTypes.bool,
+  handleCheckBookmark: PropTypes.func.isRequired
+};
