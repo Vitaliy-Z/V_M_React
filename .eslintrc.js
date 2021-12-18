@@ -8,7 +8,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true
     },
-    ecmaVersion: 13,
+    ecmaVersion: 12,
     sourceType: "module"
   },
   plugins: ["react"],
@@ -23,6 +23,7 @@ module.exports = {
         named: "ignore",
         asyncArrow: "ignore"
       }
-    ]
+    ],
+    "multiline-ternary": ["error", "never"]
   }
 };

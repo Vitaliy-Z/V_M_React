@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import _ from "lodash";
 import PropTypes from "prop-types";
-import Pagination from "./Pagination";
 import User from "./User";
+import Pagination from "./Pagination";
 
 export default function UsersList({ users, setUsers }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 3;
+  const pageSize = 2;
   const cropUsers = _.slice(
     users,
     pageSize * currentPage - pageSize,
     pageSize * currentPage
   );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [users]);
 
   if (users.length === 0) {
     return null;
@@ -32,7 +36,7 @@ export default function UsersList({ users, setUsers }) {
   };
 
   return (
-    <>
+    <div className="container">
       <table className="table table-striped table-hover">
         <thead>
           <tr>
@@ -65,7 +69,7 @@ export default function UsersList({ users, setUsers }) {
         currentPage={currentPage}
         onChangePage={setCurrentPage}
       />
-    </>
+    </div>
   );
 }
 
