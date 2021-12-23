@@ -1,14 +1,10 @@
 import React from "react";
 import _ from "lodash";
 import PropTypes from "prop-types";
+import { PAGE_SIZE } from "../utils/constant";
 
-export default function Pagination({
-  countItems,
-  pageSize,
-  currentPage,
-  onChangePage
-}) {
-  const paginationItems = _.range(1, _.ceil(countItems / pageSize) + 1);
+export default function Pagination({ countItems, currentPage, onChangePage }) {
+  const paginationItems = _.range(1, _.ceil(countItems / PAGE_SIZE) + 1);
 
   if (paginationItems.length === 1) {
     return null;
@@ -60,7 +56,6 @@ export default function Pagination({
 
 Pagination.propTypes = {
   countItems: PropTypes.number.isRequired,
-  pageSize: PropTypes.number.isRequired,
   currentPage: PropTypes.number.isRequired,
   onChangePage: PropTypes.func.isRequired
 };

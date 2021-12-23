@@ -17,7 +17,9 @@ export default function User({
 }) {
   return (
     <tr>
-      <th scope="row">{indx + 1}</th>
+      <td scope="row" style={{ fontWeight: "bold" }}>
+        {indx + 1}
+      </td>
       <td>{name}</td>
       <td>
         {qualities.map(qualiti => (
