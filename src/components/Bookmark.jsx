@@ -12,7 +12,7 @@ export default function BookMark({ id, bookmark, handleCheckBookmark }) {
       className={"bi d-block w-50 mx-auto " + showImg}
       role="img"
       aria-label="bookmark"
-      style={{ fontSize: "1.5rem", color: "cornflowerblue" }}
+      style={{ fontSize: "1.5rem", color: "cornflowerblue", cursor: "pointer" }}
     ></i>
   );
 }

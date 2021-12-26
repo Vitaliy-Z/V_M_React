@@ -6,7 +6,13 @@ import User from "./User";
 import Pagination from "./Pagination";
 import IconSort from "./IconSort";
 
-export default function UsersList({ users, setUsers, setSortBy, sortBy }) {
+export default function UsersList({
+  users,
+  setSortBy,
+  sortBy,
+  onCheckBookmark,
+  onDeleteUserBtn
+}) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const cropUsers = _.slice(
@@ -19,19 +25,6 @@ export default function UsersList({ users, setUsers, setSortBy, sortBy }) {
     setCurrentPage(1);
   }, [users]);
 
-  const handleDeleteUserBtn = event => {
-    const updatedUsers = users.filter(user => user._id !== event.target.id);
-    setUsers(updatedUsers);
-  };
-  const handleCheckBookmark = id => {
-    const updatedUsers = users.map(user => {
-      if (user._id === id) {
-        user.bookmark = !user.bookmark;
-      }
-      return user;
-    });
-    setUsers(updatedUsers);
-  };
   const handleSortUsers = event => {
     const dataSortBy = event.currentTarget.dataset.sort;
 
@@ -63,8 +56,12 @@ export default function UsersList({ users, setUsers, setSortBy, sortBy }) {
                   key={ind}
                 >
                   {value.name}
-                  {value.data === sortBy.itr && (
+                  {value.data === sortBy.itr ? (
                     <IconSort orders={sortBy.order === "asc" ? "down" : "up"} />
+                  ) : (
+                    <span style={{ color: "transparent" }}>
+                      <IconSort />
+                    </span>
                   )}
                 </th>
               ) : (
@@ -80,8 +77,8 @@ export default function UsersList({ users, setUsers, setSortBy, sortBy }) {
             <User
               key={user._id}
               indx={indx}
-              handleDeleteUserBtn={handleDeleteUserBtn}
-              handleCheckBookmark={handleCheckBookmark}
+              handleDeleteUserBtn={onDeleteUserBtn}
+              handleCheckBookmark={onCheckBookmark}
               {...user}
             />
           ))}
@@ -97,8 +94,9 @@ export default function UsersList({ users, setUsers, setSortBy, sortBy }) {
 }
 
 UsersList.propTypes = {
-  users: PropTypes.arrayOf(PropTypes.object).isRequired,
-  setUsers: PropTypes.func.isRequired,
+  users: PropTypes.arrayOf(PropTypes.object),
   setSortBy: PropTypes.func,
-  sortBy: PropTypes.object
+  sortBy: PropTypes.object,
+  onDeleteUserBtn: PropTypes.func,
+  onCheckBookmark: PropTypes.func
 };

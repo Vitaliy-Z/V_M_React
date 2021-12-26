@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function IconSort({ orders }) {
+function IconSort({ orders = "down" }) {
   return (
     <i
       className={`bi bi-caret-${orders}-fill`}

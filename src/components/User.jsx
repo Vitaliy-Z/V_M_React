@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import BookMark from "./Bookmark";
 import Qualitie from "./Qualitie";
+import { Link } from "react-router-dom";
 
 export default function User({
   indx,
@@ -20,7 +21,9 @@ export default function User({
       <td scope="row" style={{ fontWeight: "bold" }}>
         {indx + 1}
       </td>
-      <td>{name}</td>
+      <td>
+        <Link to={`users/${_id}`}>{name}</Link>
+      </td>
       <td>
         {qualities.map(qualiti => (
           <Qualitie key={qualiti._id} {...qualiti} />
