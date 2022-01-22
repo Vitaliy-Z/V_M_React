@@ -1,79 +1,91 @@
 import React, { useEffect, useState } from "react";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import _ from "lodash";
 import API from "./api";
 import { INITION_SORT_BY } from "./utils/constant";
-import FiltrationList from "./components/FiltrationList";
-import SearchStatus from "./components/SearchStatus";
-import UsersList from "./components/UsersList";
-import Spiner from "./components/Spiner";
+import NavBar from "./components/NavBar";
+import MainPage from "./layouts/MainPage";
+import LoginPage from "./layouts/LoginPage";
+import UserPage from "./layouts/UserPage";
+import UsersListPage from "./layouts/UsersListPage";
 
-export default function App() {
+function App() {
   const [allUsers, setAllUsers] = useState();
   const [usersOfShowed, setUsersOfShowed] = useState();
   const [allProfessions, setAllProfessions] = useState();
   const [selectedProf, setSelectedProf] = useState();
-  const [sortBy, setSortBy] = useState(INITION_SORT_BY);
 
   useEffect(() => {
     API.professions.fetchAll().then(res => setAllProfessions(res));
     API.users.fetchAll().then(res => {
       setAllUsers(res);
-      setUsersOfShowed(_.orderBy(res, [sortBy.itr], [sortBy.order]));
+      setUsersOfShowed(res);
+      setUsersOfShowed(
+        _.orderBy(res, [INITION_SORT_BY.itr], [INITION_SORT_BY.order])
+      );
     });
   }, []);
 
-  useEffect(() => {
-    if (usersOfShowed) {
-      setUsersOfShowed(_.orderBy(usersOfShowed, [sortBy.itr], [sortBy.order]));
-    }
-  }, [sortBy]);
-
-  const handleSelectProf = item => {
-    setUsersOfShowed();
-    setSelectedProf(item);
-    setTimeout(() => {
-      setUsersOfShowed(allUsers.filter(user => user.profession.name === item));
-    }, 250);
+  const handleDeleteUserBtn = event => {
+    const updatedUsers = usersOfShowed.filter(
+      user => user._id !== event.target.id
+    );
+    setUsersOfShowed(updatedUsers);
   };
 
-  const handleResetFilter = () => {
-    setUsersOfShowed(allUsers);
-    setSelectedProf();
-    setSortBy(INITION_SORT_BY);
+  const handleCheckBookmark = id => {
+    const updatedUsers = usersOfShowed.map(user => {
+      if (user._id === id) {
+        user.bookmark = !user.bookmark;
+      }
+      return user;
+    });
+    setUsersOfShowed(updatedUsers);
   };
 
   return (
-    <div className="m-3 px-0">
-      <div className="row">
-        <div className="col-2">
-          {allProfessions ? (
-            <FiltrationList
-              items={allProfessions}
-              onItemSelect={handleSelectProf}
-              onReset={handleResetFilter}
-              selectedItem={selectedProf}
-            />
-          ) : (
-            <Spiner />
-          )}
-        </div>
+    <BrowserRouter>
+      <NavBar />
 
-        <div className="col">
-          {usersOfShowed ? (
-            <div>
-              <SearchStatus length={usersOfShowed?.length} />
-              <UsersList
-                users={usersOfShowed}
-                setUsers={setUsersOfShowed}
-                setSortBy={setSortBy}
-                sortBy={sortBy}
-              />
-            </div>
-          ) : (
-            <Spiner />
+      <Switch>
+        <Route
+          path="/"
+          exact
+          render={props => (
+            <MainPage usersOfShowed={usersOfShowed} {...props} />
           )}
-        </div>
-      </div>
-    </div>
+        />
+        <Route path="/login" component={LoginPage} />
+        <Route
+          path="/users/:userId"
+          render={() => (
+            <UserPage
+              allUsers={allUsers}
+              onCheckBookmark={handleCheckBookmark}
+              onDeleteUserBtn={handleDeleteUserBtn}
+            />
+          )}
+        />
+        <Route
+          path="/users"
+          render={props => (
+            <UsersListPage
+              allUsers={allUsers}
+              usersOfShowed={usersOfShowed}
+              setUsersOfShowed={setUsersOfShowed}
+              selectedProf={selectedProf}
+              setSelectedProf={setSelectedProf}
+              allProfessions={allProfessions}
+              onCheckBookmark={handleCheckBookmark}
+              onDeleteUserBtn={handleDeleteUserBtn}
+              {...props}
+            />
+          )}
+        />
+        <Redirect to="/" />
+      </Switch>
+    </BrowserRouter>
   );
 }
+
+export default App;

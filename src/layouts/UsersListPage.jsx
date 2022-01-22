@@ -6,6 +6,7 @@ import { Loader } from "../components/Loaders";
 import PropTypes from "prop-types";
 import { INITION_SORT_BY } from "../utils/constant";
 import _ from "lodash";
+import SearchUsers from "../components/SearchUsers";
 
 function UsersListPage({
   allUsers,
@@ -18,6 +19,7 @@ function UsersListPage({
   onDeleteUserBtn
 }) {
   const [sortBy, setSortBy] = useState(INITION_SORT_BY);
+  const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
     if (usersOfShowed) {
@@ -25,15 +27,26 @@ function UsersListPage({
     }
   }, [sortBy]);
 
+  const handleSearchUsers = ({ target }) => {
+    setSelectedProf();
+    setSearchValue(target.value);
+    const searchedUsers = allUsers.filter(user =>
+      user.name.toLowerCase().includes(target.value.toLowerCase())
+    );
+    setUsersOfShowed(_.orderBy(searchedUsers, [sortBy.itr], [sortBy.order]));
+  };
+
   const handleSelectProf = item => {
+    setSearchValue("");
     setSelectedProf(item);
     setUsersOfShowed(allUsers.filter(user => user.profession.name === item));
   };
 
   const handleReset = () => {
-    setUsersOfShowed(allUsers);
-    setSelectedProf();
     setSortBy(INITION_SORT_BY);
+    setSearchValue("");
+    setSelectedProf();
+    setUsersOfShowed(_.orderBy(allUsers, [sortBy.itr], [sortBy.order]));
   };
 
   return allProfessions && usersOfShowed ? (
@@ -51,6 +64,10 @@ function UsersListPage({
         <div className="col">
           <div>
             <SearchStatus length={usersOfShowed?.length} />
+            <SearchUsers
+              searchValue={searchValue}
+              handleSearchUsers={handleSearchUsers}
+            />
             <UsersList
               users={usersOfShowed}
               setUsers={setUsersOfShowed}
