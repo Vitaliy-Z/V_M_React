@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import _ from "lodash";
 import FiltrationList from "../components/FiltrationList";
 import SearchStatus from "../components/SearchStatus";
 import UsersList from "../components/UsersList";
 import { Loader } from "../components/Loaders";
-import PropTypes from "prop-types";
 import { INITION_SORT_BY } from "../utils/constant";
-import _ from "lodash";
 import SearchUsers from "../components/SearchUsers";
 
 function UsersListPage({

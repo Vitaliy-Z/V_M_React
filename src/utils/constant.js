@@ -32,3 +32,9 @@ export const VALUES_OF_TH = [
     name: ""
   }
 ];
+export const PATH_NAME = {
+  main: "/",
+  login: "/login",
+  register: "/register",
+  users: "/users"
+};

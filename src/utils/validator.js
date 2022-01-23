@@ -9,6 +9,15 @@ const validatorConfig = {
     isLowercase: "Пароль должен содержать строчную букву",
     isIncludeNumber: "Пароль должен содержать цыфру",
     isValidLength: "Пароль должен быть не менее 8-и символов"
+  },
+  profession: {
+    isRequire: "Выберете проффесию"
+  },
+  qualities: {
+    isRequire: "Выберете качества"
+  },
+  license: {
+    isRequire: "Необходимо подтвердить лицензию"
   }
 };
 
@@ -18,7 +27,11 @@ const validator = data => {
     for (const validateMethod in validatorConfig[fieldName]) {
       switch (validateMethod) {
         case "isRequire":
-          if (data[fieldName] === "") {
+          if (
+            data[fieldName] === "" ||
+            data[fieldName] === false ||
+            data[fieldName].length === 0
+          ) {
             err[fieldName] = validatorConfig[fieldName][validateMethod];
           }
           break;

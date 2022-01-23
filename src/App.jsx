@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import _ from "lodash";
 import API from "./api";
-import { INITION_SORT_BY } from "./utils/constant";
+import { INITION_SORT_BY, PATH_NAME } from "./utils/constant";
 import NavBar from "./components/NavBar";
 import MainPage from "./layouts/MainPage";
 import LoginPage from "./layouts/LoginPage";
@@ -49,15 +49,15 @@ function App() {
 
       <Switch>
         <Route
-          path="/"
+          path={PATH_NAME.main}
           exact
           render={props => (
             <MainPage usersOfShowed={usersOfShowed} {...props} />
           )}
         />
-        <Route path="/login" component={LoginPage} />
+        <Route path={`${PATH_NAME.login}/:type?`} exact component={LoginPage} />
         <Route
-          path="/users/:userId"
+          path={`${PATH_NAME.users}/:userId`}
           render={() => (
             <UserPage
               allUsers={allUsers}
@@ -67,7 +67,7 @@ function App() {
           )}
         />
         <Route
-          path="/users"
+          path={PATH_NAME.users}
           render={props => (
             <UsersListPage
               allUsers={allUsers}
@@ -82,7 +82,7 @@ function App() {
             />
           )}
         />
-        <Redirect to="/" />
+        <Redirect to={PATH_NAME.main} />
       </Switch>
     </BrowserRouter>
   );
