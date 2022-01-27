@@ -1,33 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import _ from "lodash";
 import { PAGE_SIZE, VALUES_OF_TH } from "../utils/constant";
-import PropTypes from "prop-types";
 import User from "./User";
 import Pagination from "./Pagination";
 import IconSort from "./IconSort";
+import { UserOfShowedContext } from "../context";
 
-export default function UsersList({
-  users,
-  setSortBy,
-  sortBy,
-  onCheckBookmark,
-  onDeleteUserBtn
-}) {
+export default function UsersList({ setSortBy, sortBy }) {
+  const { usersOfShowed } = useContext(UserOfShowedContext);
+
   const [currentPage, setCurrentPage] = useState(1);
 
   const cropUsers = _.slice(
-    users,
+    usersOfShowed,
     PAGE_SIZE * currentPage - PAGE_SIZE,
     PAGE_SIZE * currentPage
   );
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [users]);
+  }, [usersOfShowed]);
 
-  const handleSortUsers = event => {
-    const dataSortBy = event.currentTarget.dataset.sort;
-
+  const handleSortUsers = ({ currentTarget }) => {
+    const dataSortBy = currentTarget.dataset.sort;
     if (dataSortBy === sortBy.itr) {
       setSortBy(prevState => ({
         ...prevState,
@@ -37,10 +33,6 @@ export default function UsersList({
       setSortBy({ itr: dataSortBy, order: "asc" });
     }
   };
-
-  if (users.length === 0) {
-    return null;
-  }
 
   return (
     <div className="container p-0">
@@ -74,18 +66,12 @@ export default function UsersList({
         </thead>
         <tbody>
           {cropUsers.map((user, indx) => (
-            <User
-              key={user._id}
-              indx={indx}
-              handleDeleteUserBtn={onDeleteUserBtn}
-              handleCheckBookmark={onCheckBookmark}
-              {...user}
-            />
+            <User key={user._id + user.name} indx={indx} id={user._id} />
           ))}
         </tbody>
       </table>
       <Pagination
-        countItems={users.length}
+        countItems={usersOfShowed.length}
         currentPage={currentPage}
         onChangePage={setCurrentPage}
       />
@@ -94,9 +80,6 @@ export default function UsersList({
 }
 
 UsersList.propTypes = {
-  users: PropTypes.arrayOf(PropTypes.object),
   setSortBy: PropTypes.func,
-  sortBy: PropTypes.object,
-  onDeleteUserBtn: PropTypes.func,
-  onCheckBookmark: PropTypes.func
+  sortBy: PropTypes.object
 };

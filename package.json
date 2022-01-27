@@ -50,6 +50,7 @@
     "eslint-plugin-react": "^7.27.1",
     "lodash": "^4.17.21",
     "prop-types": "^15.7.2",
-    "react-select": "^5.2.2"
+    "react-select": "^5.2.2",
+    "uuid": "^3.4.0"
   }
 }

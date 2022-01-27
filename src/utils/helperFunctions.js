@@ -8,6 +8,7 @@ export const updateObjToArr = obj => {
 
 export const updateArray = arr =>
   arr.map(item => ({
+    ...item,
     value: item._id,
     label: item.name
   }));

@@ -1,36 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
+import Select from "react-select";
 
 const SelectField = ({
   label,
   name,
-  value,
   onChange,
   defaultValue = "...",
   options,
   error
 }) => {
   return (
-    <div className="d-flex flex-column mb-3">
-      <label className="form-label">
-        {label}
-        <select
-          className={"form-select is-" + (error ? "invalid" : "valid")}
-          name={name}
-          value={value}
-          onChange={({ target }) => onChange(target)}
-        >
-          <option disabled value="">
-            {defaultValue}
-          </option>
-          {options.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </label>
-      {error && <div className="invalid-feedback d-block m-0">{error}</div>}
+    <div className="mb-3 has-validation">
+      <label className="form-label">{label}</label>
+      <Select
+        className={"basic-single is-" + (error ? "invalid" : "valid")}
+        classNamePrefix="select"
+        defaultValue={defaultValue}
+        name={name}
+        options={options}
+        onChange={e => onChange({ name: name, value: e })}
+      />
+      {error && <p className="invalid-feedback d-block m-0">{error}</p>}
     </div>
   );
 };
@@ -38,9 +29,8 @@ const SelectField = ({
 SelectField.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string,
-  value: PropTypes.string,
   onChange: PropTypes.func,
-  defaultValue: PropTypes.string,
+  defaultValue: PropTypes.object,
   options: PropTypes.array.isRequired,
   error: PropTypes.string
 };

@@ -1,10 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
-
+import React, { useContext } from "react";
 import SearchStatus from "../components/SearchStatus";
 import { Loader } from "../components/Loaders";
+import { AllUserContext } from "../context";
 
-function MainPage({ usersOfShowed }) {
+export default function MainPage() {
+  const { allUsers } = useContext(AllUserContext);
+  if (!allUsers) {
+    return <Loader />;
+  }
   return (
     <div
       className="container position-absolute top-50 start-50"
@@ -13,17 +16,7 @@ function MainPage({ usersOfShowed }) {
         textAlign: "center"
       }}
     >
-      {usersOfShowed ? (
-        <SearchStatus length={usersOfShowed.length} />
-      ) : (
-        <Loader />
-      )}
+      <SearchStatus length={allUsers.length} />
     </div>
   );
 }
-
-MainPage.propTypes = {
-  usersOfShowed: PropTypes.array
-};
-
-export default MainPage;

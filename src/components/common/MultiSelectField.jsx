@@ -5,7 +5,14 @@ import PropTypes from "prop-types";
 
 const animatedComponents = makeAnimated();
 
-const MultiSelectField = ({ label, name, options, onChange, error }) => {
+const MultiSelectField = ({
+  label,
+  name,
+  options,
+  onChange,
+  error,
+  defaultValue
+}) => {
   return (
     <div className="mb-3 has-validation">
       <label className="form-label">{label}</label>
@@ -14,8 +21,11 @@ const MultiSelectField = ({ label, name, options, onChange, error }) => {
         closeMenuOnSelect={false}
         components={animatedComponents}
         name={name}
+        defaultValue={defaultValue}
         options={options}
-        onChange={e => onChange({ name: name, value: e })}
+        onChange={e => {
+          onChange({ name: name, value: e });
+        }}
         className={"basic-multi-select is-" + (error ? "invalid" : "valid")}
         classNamePrefix="select"
       />
@@ -29,7 +39,8 @@ MultiSelectField.propTypes = {
   name: PropTypes.string,
   options: PropTypes.array,
   onChange: PropTypes.func,
-  error: PropTypes.string
+  error: PropTypes.string,
+  defaultValue: PropTypes.array
 };
 
 export default MultiSelectField;

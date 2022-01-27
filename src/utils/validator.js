@@ -1,4 +1,7 @@
 const validatorConfig = {
+  name: {
+    isRequire: "Заполните поле имени"
+  },
   email: {
     isRequire: "Заполните поле почты",
     isEmail: "Почта введена некорректно"

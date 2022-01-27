@@ -24,6 +24,6 @@ module.exports = {
         asyncArrow: "ignore"
       }
     ],
-    "multiline-ternary": ["error", "never"]
+    "multiline-ternary": "off"
   }
 };

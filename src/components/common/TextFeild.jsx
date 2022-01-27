@@ -8,7 +8,8 @@ const TextFeild = ({
   placeholder = "Заполните поле",
   value,
   error,
-  onChange
+  onChange,
+  isValidation = true
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -24,10 +25,12 @@ const TextFeild = ({
           placeholder={placeholder}
           value={value}
           error={error}
-          onChange={({ target }) => {
-            onChange(target);
-          }}
-          className={"form-control is-" + (error ? "invalid" : "valid")}
+          onChange={({ target }) => onChange(target)}
+          className={
+            isValidation
+              ? "form-control is-" + (error ? "invalid" : "valid")
+              : "form-control"
+          }
         />
         {type === "password" && (
           <button
@@ -47,11 +50,12 @@ const TextFeild = ({
 TextFeild.propTypes = {
   label: PropTypes.string,
   type: PropTypes.string,
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   placeholder: PropTypes.string,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
   error: PropTypes.string,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  isValidation: PropTypes.bool
 };
 
 export default TextFeild;

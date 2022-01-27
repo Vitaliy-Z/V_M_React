@@ -1,25 +1,33 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import React, { useContext, useEffect, useState } from "react";
 import _ from "lodash";
-import FiltrationList from "../components/FiltrationList";
-import SearchStatus from "../components/SearchStatus";
-import UsersList from "../components/UsersList";
+import API from "../api";
 import { Loader } from "../components/Loaders";
 import { INITION_SORT_BY } from "../utils/constant";
-import SearchUsers from "../components/SearchUsers";
+import FiltrationList from "../components/common/FiltrationList";
+import SearchStatus from "../components/SearchStatus";
+import UsersList from "../components/UsersList";
+import { AllUserContext, UserOfShowedContext } from "../context";
+import TextFeild from "../components/common/TextFeild";
 
-function UsersListPage({
-  allUsers,
-  usersOfShowed,
-  setUsersOfShowed,
-  selectedProf,
-  setSelectedProf,
-  allProfessions,
-  onCheckBookmark,
-  onDeleteUserBtn
-}) {
+export default function UsersListPage() {
+  const { allUsers } = useContext(AllUserContext);
+
+  const [usersOfShowed, setUsersOfShowed] = useState();
+  const [allProfessions, setAllProfessions] = useState();
+  const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState(INITION_SORT_BY);
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState();
+
+  useEffect(() => {
+    API.professions.fetchAll().then(data => setAllProfessions(data));
+    setUsersOfShowed(allUsers);
+  }, []);
+
+  useEffect(() => {
+    setUsersOfShowed(
+      _.orderBy(allUsers, [INITION_SORT_BY.itr], [INITION_SORT_BY.order])
+    );
+  }, [allUsers]);
 
   useEffect(() => {
     if (usersOfShowed) {
@@ -27,11 +35,11 @@ function UsersListPage({
     }
   }, [sortBy]);
 
-  const handleSearchUsers = ({ target }) => {
+  const handleSearchUsers = ({ value }) => {
     setSelectedProf();
-    setSearchValue(target.value);
+    setSearchValue(value.trim());
     const searchedUsers = allUsers.filter(user =>
-      user.name.toLowerCase().includes(target.value.toLowerCase())
+      user.name.toLowerCase().includes(value.trim().toLowerCase())
     );
     setUsersOfShowed(_.orderBy(searchedUsers, [sortBy.itr], [sortBy.order]));
   };
@@ -49,52 +57,42 @@ function UsersListPage({
     setUsersOfShowed(_.orderBy(allUsers, [sortBy.itr], [sortBy.order]));
   };
 
-  return allProfessions && usersOfShowed ? (
-    <div className="m-2 px-0">
-      <div className="row">
-        <div className="col-2">
-          <FiltrationList
-            items={allProfessions}
-            onItemSelect={handleSelectProf}
-            onReset={handleReset}
-            selectedItem={selectedProf}
-          />
-        </div>
+  if (!allProfessions) {
+    return <Loader />;
+  }
+  if (!usersOfShowed) {
+    return <Loader />;
+  }
+  return (
+    <UserOfShowedContext.Provider value={{ usersOfShowed, setUsersOfShowed }}>
+      <div className="m-2 px-0">
+        <div className="row">
+          <div className="col-2">
+            <FiltrationList
+              items={allProfessions}
+              onItemSelect={handleSelectProf}
+              onReset={handleReset}
+              selectedItem={selectedProf}
+            />
+          </div>
 
-        <div className="col">
-          <div>
-            <SearchStatus length={usersOfShowed?.length} />
-            <SearchUsers
-              searchValue={searchValue}
-              handleSearchUsers={handleSearchUsers}
-            />
-            <UsersList
-              users={usersOfShowed}
-              setUsers={setUsersOfShowed}
-              onCheckBookmark={onCheckBookmark}
-              onDeleteUserBtn={onDeleteUserBtn}
-              setSortBy={setSortBy}
-              sortBy={sortBy}
-            />
+          <div className="col-10">
+            <div>
+              <SearchStatus length={usersOfShowed?.length} />
+              <TextFeild
+                placeholder="Введите имя для поиска"
+                value={searchValue}
+                onChange={handleSearchUsers}
+                isValidation={false}
+              />
+
+              {usersOfShowed.length !== 0 && (
+                <UsersList setSortBy={setSortBy} sortBy={sortBy} />
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  ) : (
-    <Loader />
+    </UserOfShowedContext.Provider>
   );
 }
-
-UsersListPage.propTypes = {
-  allUsers: PropTypes.array,
-  usersOfShowed: PropTypes.array,
-  setUsersOfShowed: PropTypes.func,
-  selectedProf: PropTypes.string,
-  setSelectedProf: PropTypes.func,
-  allProfessions: PropTypes.array,
-  handleResetFilter: PropTypes.func,
-  onCheckBookmark: PropTypes.func,
-  onDeleteUserBtn: PropTypes.func
-};
-
-export default UsersListPage;

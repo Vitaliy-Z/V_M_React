@@ -1,30 +1,38 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { useHistory, Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { v4 as uuidv4 } from "uuid";
+import API from "../api";
+import { Loader } from "./Loaders";
 import { PATH_NAME } from "../utils/constant";
 import validator from "../utils/validator";
 import { transformDataToFeild } from "../utils/helperFunctions";
-
-import SelectField from "./common/SelectField";
 import TextFeild from "./common/TextFeild";
-import RadioField from "./common/RadioField";
+import SelectField from "./common/SelectField";
 import MultiSelectField from "./common/MultiSelectField";
-import { Loader } from "./Loaders";
-import API from "../api";
+import RadioField from "./common/RadioField";
 import CheckField from "./common/CheckField";
+import { AllUserContext } from "../context";
 
 const RegisterForm = () => {
   const [data, setData] = useState({
+    _id: uuidv4(),
+    name: "",
     email: "",
     password: "",
     profession: "",
     sex: "male",
     qualities: [],
+    completedMeetings: 0,
+    rate: 5,
+    bookmark: false,
     license: false
   });
   const [errors, setErrors] = useState({});
   const [proffesions, setProffesions] = useState();
   const [qualities, setQualities] = useState();
+  const history = useHistory();
+  const { setAllUsers } = useContext(AllUserContext);
 
   useEffect(() => {
     API.professions.fetchAll().then(data => {
@@ -49,7 +57,12 @@ const RegisterForm = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    console.log(data);
+    API.users.add(data);
+    setAllUsers(prev => {
+      prev.push(data);
+      return prev;
+    });
+    history.push(PATH_NAME.main);
   };
 
   return (
@@ -57,6 +70,14 @@ const RegisterForm = () => {
       <h1>Регистация</h1>
       {proffesions ? (
         <form action="">
+          <TextFeild
+            label={"Ваше имя"}
+            name={"name"}
+            placeholder={"Иван Иванов"}
+            value={data.name}
+            error={errors.name}
+            onChange={handleChange}
+          />
           <TextFeild
             label={"Электроння почта"}
             type={"email"}
@@ -99,6 +120,7 @@ const RegisterForm = () => {
             options={qualities}
             onChange={handleChange}
             error={errors.qualities}
+            defaultValue={data.qualities}
           />
           <CheckField
             name={"license"}

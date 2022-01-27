@@ -1,89 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import _ from "lodash";
+import { AllUserContext } from "./context";
 import API from "./api";
-import { INITION_SORT_BY, PATH_NAME } from "./utils/constant";
+import { PATH_NAME } from "./utils/constant";
 import NavBar from "./components/NavBar";
 import MainPage from "./layouts/MainPage";
 import LoginPage from "./layouts/LoginPage";
 import UserPage from "./layouts/UserPage";
 import UsersListPage from "./layouts/UsersListPage";
+import EditUserPage from "./layouts/EditUserPage";
 
 function App() {
   const [allUsers, setAllUsers] = useState();
-  const [usersOfShowed, setUsersOfShowed] = useState();
-  const [allProfessions, setAllProfessions] = useState();
-  const [selectedProf, setSelectedProf] = useState();
 
   useEffect(() => {
-    API.professions.fetchAll().then(res => setAllProfessions(res));
-    API.users.fetchAll().then(res => {
-      setAllUsers(res);
-      setUsersOfShowed(res);
-      setUsersOfShowed(
-        _.orderBy(res, [INITION_SORT_BY.itr], [INITION_SORT_BY.order])
-      );
-    });
+    API.users.fetchAll().then(data => setAllUsers(data));
   }, []);
-
-  const handleDeleteUserBtn = event => {
-    const updatedUsers = usersOfShowed.filter(
-      user => user._id !== event.target.id
-    );
-    setUsersOfShowed(updatedUsers);
-  };
-
-  const handleCheckBookmark = id => {
-    const updatedUsers = usersOfShowed.map(user => {
-      if (user._id === id) {
-        user.bookmark = !user.bookmark;
-      }
-      return user;
-    });
-    setUsersOfShowed(updatedUsers);
-  };
 
   return (
     <BrowserRouter>
-      <NavBar />
-
-      <Switch>
-        <Route
-          path={PATH_NAME.main}
-          exact
-          render={props => (
-            <MainPage usersOfShowed={usersOfShowed} {...props} />
-          )}
-        />
-        <Route path={`${PATH_NAME.login}/:type?`} exact component={LoginPage} />
-        <Route
-          path={`${PATH_NAME.users}/:userId`}
-          render={() => (
-            <UserPage
-              allUsers={allUsers}
-              onCheckBookmark={handleCheckBookmark}
-              onDeleteUserBtn={handleDeleteUserBtn}
-            />
-          )}
-        />
-        <Route
-          path={PATH_NAME.users}
-          render={props => (
-            <UsersListPage
-              allUsers={allUsers}
-              usersOfShowed={usersOfShowed}
-              setUsersOfShowed={setUsersOfShowed}
-              selectedProf={selectedProf}
-              setSelectedProf={setSelectedProf}
-              allProfessions={allProfessions}
-              onCheckBookmark={handleCheckBookmark}
-              onDeleteUserBtn={handleDeleteUserBtn}
-              {...props}
-            />
-          )}
-        />
-        <Redirect to={PATH_NAME.main} />
-      </Switch>
+      <AllUserContext.Provider value={{ allUsers, setAllUsers }}>
+        <NavBar />
+        <Switch>
+          <Route path={PATH_NAME.main} exact component={MainPage} />
+          <Route
+            path={`${PATH_NAME.login}/:type?`}
+            exact
+            component={LoginPage}
+          />
+          <Route
+            path={`${PATH_NAME.users}/:userId`}
+            exact
+            component={UserPage}
+          />
+          <Route
+            path={`${PATH_NAME.users}/:userId/edit`}
+            component={EditUserPage}
+          />
+          <Route path={PATH_NAME.users} component={UsersListPage} />
+          <Redirect to={PATH_NAME.main} />
+        </Switch>
+      </AllUserContext.Provider>
     </BrowserRouter>
   );
 }

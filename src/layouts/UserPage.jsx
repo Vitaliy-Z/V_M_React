@@ -1,15 +1,48 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import { Loader } from "../components/Loaders";
 import Qualitie from "../components/Qualitie";
+import API from "../api";
+import { AllUserContext } from "../context";
 
-function UserPage({ allUsers, onCheckBookmark, onDeleteUserBtn }) {
+const UserPage = () => {
+  const { setAllUsers } = useContext(AllUserContext);
+
+  const [user, setUser] = useState();
   const { userId } = useParams();
+  const { pathname } = useLocation();
   const history = useHistory();
-  const user = allUsers?.find(item => item._id === userId);
 
-  return user ? (
+  useEffect(() => {
+    API.users.getById(userId).then(data => setUser(data));
+  }, []);
+
+  const handleCheckBookmark = () => {
+    const updateUser = { ...user, bookmark: !user.bookmark };
+    setUser(updateUser);
+    API.users.update(updateUser._id, updateUser);
+    setAllUsers(prev =>
+      prev.map(u => {
+        if (u._id === updateUser._id) {
+          return updateUser;
+        }
+        return u;
+      })
+    );
+  };
+  const handleDelete = () => {
+    API.users
+      .remove(user._id)
+      .then(data => setAllUsers(prev => prev.filter(u => u._id !== data._id)));
+    history.push("/users");
+  };
+
+  if (!user) {
+    return <Loader />;
+  }
+
+  return (
     <div
       className="card mx-auto my-5 shadow-lg rounded"
       style={{ maxWidth: "640px" }}
@@ -33,7 +66,7 @@ function UserPage({ allUsers, onCheckBookmark, onDeleteUserBtn }) {
             <p className="card-text">
               {user.qualities.map(item => (
                 <Qualitie key={item._id} {...item} />
-              ))}{" "}
+              ))}
             </p>
             <p className="card-text">
               Количество завершенных встреч:{" "}
@@ -44,20 +77,23 @@ function UserPage({ allUsers, onCheckBookmark, onDeleteUserBtn }) {
             </p>
             <div className="d-grid gap-2 col-6 ms-auto">
               <button
-                className="btn btn-success"
+                className="btn btn-warning"
                 onClick={() => {
-                  onCheckBookmark(user._id);
+                  history.push(`${pathname}/edit`);
                 }}
+              >
+                Изменить
+              </button>
+              <button
+                className="btn btn-success"
+                onClick={handleCheckBookmark}
                 id={user._id}
               >
                 {user.bookmark ? "Удалить с избранных" : "Добавить в избранное"}
               </button>
               <button
                 className="btn btn-danger"
-                onClick={event => {
-                  history.push("/users");
-                  onDeleteUserBtn(event);
-                }}
+                onClick={handleDelete}
                 id={user._id}
               >
                 Удалить
@@ -75,13 +111,10 @@ function UserPage({ allUsers, onCheckBookmark, onDeleteUserBtn }) {
         </div>
       </div>
     </div>
-  ) : (
-    <Loader />
   );
-}
+};
 
 UserPage.propTypes = {
-  allUsers: PropTypes.array,
   onCheckBookmark: PropTypes.func,
   onDeleteUserBtn: PropTypes.func
 };
