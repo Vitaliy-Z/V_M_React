@@ -7,21 +7,21 @@ function NavBar() {
   return (
     <nav className="nav nav-tabs mx-5 my-2">
       <Link to="/" className={"nav-link" + (pathname === "/" ? " active" : "")}>
-        Main
+        Главная
       </Link>
 
       <Link
         to="/login"
         className={"nav-link" + (pathname === "/login" ? " active" : "")}
       >
-        Login
+        Вход
       </Link>
 
       <Link
         to="/users"
         className={"nav-link" + (pathname === "/users" ? " active" : "")}
       >
-        Users
+        Учасники
       </Link>
     </nav>
   );

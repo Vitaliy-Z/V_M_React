@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
+import { UserOfShowedContext } from "../context";
 import { PAGE_SIZE, VALUES_OF_TH } from "../utils/constant";
-import User from "./User";
+import { UserOfList } from "./User";
 import Pagination from "./Pagination";
 import IconSort from "./IconSort";
-import { UserOfShowedContext } from "../context";
 
 export default function UsersList({ setSortBy, sortBy }) {
   const { usersOfShowed } = useContext(UserOfShowedContext);
@@ -66,7 +66,7 @@ export default function UsersList({ setSortBy, sortBy }) {
         </thead>
         <tbody>
           {cropUsers.map((user, indx) => (
-            <User key={user._id + user.name} indx={indx} id={user._id} />
+            <UserOfList key={user._id + user.name} indx={indx} id={user._id} />
           ))}
         </tbody>
       </table>

@@ -8,7 +8,6 @@ import TextFeild from "../components/common/TextFeild";
 import { Loader } from "../components/Loaders";
 import { transformDataToFeild } from "../utils/helperFunctions";
 import validator from "../utils/validator";
-import { PATH_NAME } from "../utils/constant";
 import { AllUserContext } from "../context";
 
 const EditUserPage = () => {
@@ -22,7 +21,6 @@ const EditUserPage = () => {
 
   useEffect(() => {
     setUser(allUsers.find(u => u._id === userId));
-    // API.users.getById(userId).then(data => setUser(data));
     API.professions.fetchAll().then(data => {
       setAllProfessions(transformDataToFeild(data));
     });
@@ -68,7 +66,7 @@ const EditUserPage = () => {
         return u;
       })
     );
-    history.push(PATH_NAME.users);
+    history.goBack();
   };
 
   if (!user) {
@@ -129,9 +127,17 @@ const EditUserPage = () => {
         type="submit"
         onClick={handleSubmit}
         disabled={!(Object.keys(errors).length === 0)}
-        className="btn btn-primary d-block w-75 mt-4 mb-4 m-auto"
+        className="btn btn-primary d-block w-75 mt-4 mb-2 m-auto"
       >
         Изменить
+      </button>
+      <button
+        className="btn btn-secondary d-block w-75   m-auto"
+        onClick={() => {
+          history.goBack();
+        }}
+      >
+        Назад
       </button>
     </div>
   );

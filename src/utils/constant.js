@@ -1,5 +1,5 @@
 export const INITION_SORT_BY = { itr: "name", order: "asc" };
-export const PAGE_SIZE = 10;
+export const PAGE_SIZE = 5;
 export const VALUES_OF_TH = [
   {
     name: "№"

@@ -21,6 +21,9 @@ const validatorConfig = {
   },
   license: {
     isRequire: "Необходимо подтвердить лицензию"
+  },
+  commentOwner: {
+    isRequire: "Выберете пользователя"
   }
 };
 

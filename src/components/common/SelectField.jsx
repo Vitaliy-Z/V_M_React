@@ -16,6 +16,7 @@ const SelectField = ({
       <Select
         className={"basic-single is-" + (error ? "invalid" : "valid")}
         classNamePrefix="select"
+        isClearable
         defaultValue={defaultValue}
         name={name}
         options={options}

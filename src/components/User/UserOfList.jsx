@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
-import PropTypes from "prop-types";
-import BookMark from "./common/Bookmark";
-import Qualitie from "./Qualitie";
 import { Link } from "react-router-dom";
-import API from "../api";
-import { AllUserContext } from "../context";
+import PropTypes from "prop-types";
+import BookMark from "../common/Bookmark";
+import Qualitie from "../Qualitie";
+import API from "../../api";
+import { AllUserContext } from "../../context";
 
 export default function User({ indx, id }) {
   const { allUsers, setAllUsers } = useContext(AllUserContext);
@@ -38,7 +38,9 @@ export default function User({ indx, id }) {
         {indx + 1}
       </td>
       <td>
-        <Link to={`users/${user._id}`}>{user.name}</Link>
+        <Link className="fs-6 text-dark" to={`users/${user._id}`}>
+          {user.name}
+        </Link>
       </td>
       <td>
         {user.qualities.map(qualiti => (
