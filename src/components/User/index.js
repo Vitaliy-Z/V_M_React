@@ -4,7 +4,7 @@ import UserQualitiesCard from "./UserQualitiesCard";
 import UserMeetingsCard from "./UserMeetingsCard";
 import UserComent from "./UserComent";
 import UserListComments from "./UserListComments";
-import UserComentForm from "./UserComentForm";
+import UserComentForm from "../forms/UserComentForm";
 
 export {
   UserOfList,

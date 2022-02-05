@@ -1,10 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { UserComent } from ".";
-import { AllUserContext } from "../../context";
+import { UserComent } from "./";
 
 const UserListComments = ({ comments, handleClickBtnRemove }) => {
-  const { allUsers } = useContext(AllUserContext);
+  const allUsers = [];
 
   if (comments?.length === 0) {
     return null;

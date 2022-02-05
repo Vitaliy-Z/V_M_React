@@ -6,7 +6,7 @@ const TextFeild = ({
   type = "text",
   name,
   placeholder = "Заполните поле",
-  value,
+  value = "",
   error,
   onChange,
   isValidation = true

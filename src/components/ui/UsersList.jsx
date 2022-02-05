@@ -1,26 +1,23 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
-import { UserOfShowedContext } from "../context";
-import { PAGE_SIZE, VALUES_OF_TH } from "../utils/constant";
-import { UserOfList } from "./User";
-import Pagination from "./Pagination";
-import IconSort from "./IconSort";
+import { PAGE_SIZE, VALUES_OF_TH } from "../../utils/constant";
+import { UserOfList } from "../user";
+import { Pagination } from "../common";
+import { IconSort } from "../icons";
 
-export default function UsersList({ setSortBy, sortBy }) {
-  const { usersOfShowed } = useContext(UserOfShowedContext);
-
+const UsersList = ({ users, setSortBy, sortBy }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const cropUsers = _.slice(
-    usersOfShowed,
+    users,
     PAGE_SIZE * currentPage - PAGE_SIZE,
     PAGE_SIZE * currentPage
   );
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [usersOfShowed]);
+  }, [users]);
 
   const handleSortUsers = ({ currentTarget }) => {
     const dataSortBy = currentTarget.dataset.sort;
@@ -39,13 +36,13 @@ export default function UsersList({ setSortBy, sortBy }) {
       <table className="table table-striped table-hover">
         <thead>
           <tr>
-            {VALUES_OF_TH.map((value, ind) =>
+            {VALUES_OF_TH.map((value, indx) =>
               value.data ? (
                 <th
                   onClick={handleSortUsers}
                   data-sort={value.data}
                   scope="col"
-                  key={ind}
+                  key={indx}
                 >
                   {value.name}
                   {value.data === sortBy.itr ? (
@@ -57,7 +54,12 @@ export default function UsersList({ setSortBy, sortBy }) {
                   )}
                 </th>
               ) : (
-                <th className={ind === 2 ? "w-25" : " "} scope="col" key={ind}>
+                <th
+                  className={indx === 1 && "w-25"}
+                  // style={indx === 1 && { width: "30%" }}
+                  scope="col"
+                  key={indx}
+                >
                   {value.name}
                 </th>
               )
@@ -66,20 +68,23 @@ export default function UsersList({ setSortBy, sortBy }) {
         </thead>
         <tbody>
           {cropUsers.map((user, indx) => (
-            <UserOfList key={user._id + user.name} indx={indx} id={user._id} />
+            <UserOfList key={user._id} indx={indx} {...user} />
           ))}
         </tbody>
       </table>
       <Pagination
-        countItems={usersOfShowed.length}
+        countItems={users.length}
         currentPage={currentPage}
         onChangePage={setCurrentPage}
       />
     </div>
   );
-}
+};
 
 UsersList.propTypes = {
+  users: PropTypes.array.isRequired,
   setSortBy: PropTypes.func,
   sortBy: PropTypes.object
 };
+
+export default UsersList;

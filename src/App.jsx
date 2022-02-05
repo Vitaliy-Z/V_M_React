@@ -1,48 +1,50 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import { AllUserContext } from "./context";
-import API from "./api";
+import { ToastContainer } from "react-toastify";
+
 import { PATH_NAME } from "./utils/constant";
-import NavBar from "./components/NavBar";
-import MainPage from "./layouts/MainPage";
-import LoginPage from "./layouts/LoginPage";
-import UserPage from "./layouts/UserPage";
-import UsersListPage from "./layouts/UsersListPage";
-import EditUserPage from "./layouts/EditUserPage";
+import NavBar from "./components/ui/NavBar";
+import {
+  MainPage,
+  LoginPage,
+  UserPage,
+  UsersListPage,
+  EditUserPage
+} from "./pages";
+import { UserProvider, ProfessionProvider, QualityProvider } from "./hooks";
 
-function App() {
-  const [allUsers, setAllUsers] = useState();
-
-  useEffect(() => {
-    API.users.fetchAll().then(data => setAllUsers(data));
-  }, []);
-
+const App = () => {
   return (
     <BrowserRouter>
-      <AllUserContext.Provider value={{ allUsers, setAllUsers }}>
-        <NavBar />
-        <Switch>
+      <NavBar />
+      <Switch>
+        <UserProvider>
           <Route path={PATH_NAME.main} exact component={MainPage} />
-          <Route
-            path={`${PATH_NAME.login}/:type?`}
-            exact
-            component={LoginPage}
-          />
-          <Route
-            path={`${PATH_NAME.users}/:userId`}
-            exact
-            component={UserPage}
-          />
-          <Route
-            path={`${PATH_NAME.users}/:userId/edit`}
-            component={EditUserPage}
-          />
-          <Route path={PATH_NAME.users} component={UsersListPage} />
-          <Redirect to={PATH_NAME.main} />
-        </Switch>
-      </AllUserContext.Provider>
+          <ProfessionProvider>
+            <QualityProvider>
+              <Route
+                path={`${PATH_NAME.login}/:type?`}
+                exact
+                component={LoginPage}
+              />
+              <Route
+                path={`${PATH_NAME.users}/:userId`}
+                exact
+                component={UserPage}
+              />
+              <Route
+                path={`${PATH_NAME.users}/:userId/edit`}
+                component={EditUserPage}
+              />
+              <Route path={PATH_NAME.users} exact component={UsersListPage} />
+            </QualityProvider>
+          </ProfessionProvider>
+        </UserProvider>
+        <Redirect to={PATH_NAME.main} />
+      </Switch>
+      <ToastContainer />
     </BrowserRouter>
   );
-}
+};
 
 export default App;

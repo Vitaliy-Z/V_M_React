@@ -1,75 +1,50 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import API from "../api";
-import MultiSelectField from "../components/common/MultiSelectField";
-import RadioField from "../components/common/RadioField";
-import SelectField from "../components/common/SelectField";
-import TextFeild from "../components/common/TextFeild";
-import { Loader } from "../components/Loaders";
-import { transformDataToFeild } from "../utils/helperFunctions";
+import {
+  RadioField,
+  SelectField,
+  MultiSelectField,
+  TextFeild,
+  Loader
+} from "../components/common";
+import { useUsers } from "../hooks/useUsers";
+import { useProfessions } from "../hooks/useProfessions";
+import { useQualities } from "../hooks/useQualities";
+import {
+  changeHandlerInput,
+  transformDataToFeild
+} from "../utils/helperFunctions";
 import validator from "../utils/validator";
-import { AllUserContext } from "../context";
 
 const EditUserPage = () => {
   const { userId } = useParams();
   const history = useHistory();
+
   const [user, setUser] = useState();
-  const [allProfessions, setAllProfessions] = useState([]);
-  const [allQualitties, setAllQualitties] = useState([]);
   const [errors, setErrors] = useState();
-  const { allUsers, setAllUsers } = useContext(AllUserContext);
+
+  const { getUserById } = useUsers();
+  const { allProfessions, getProfessionById } = useProfessions();
+  const { allQualities, getQualityById } = useQualities();
 
   useEffect(() => {
-    setUser(allUsers.find(u => u._id === userId));
-    API.professions.fetchAll().then(data => {
-      setAllProfessions(transformDataToFeild(data));
-    });
-    API.qualities
-      .fetchAll()
-      .then(data => setAllQualitties(transformDataToFeild(data)));
+    setUser(getUserById(userId));
   }, []);
+
   useEffect(() => {
     setErrors(validator(user));
   }, [user]);
 
-  const handleChange = target => {
-    if (target.name === "profession") {
-      setUser(prev => ({
-        ...prev,
-        [target.name]: { _id: target.value.value, name: target.value.label }
-      }));
-      return;
-    }
-    if (target.name === "qualities") {
-      const newQualities = target.value.map(item => ({
-        _id: item._id,
-        name: item.name,
-        color: item.color
-      }));
-      setUser(prev => ({
-        ...prev,
-        [target.name]: newQualities
-      }));
-      return;
-    }
-    setUser(prev => ({ ...prev, [target.name]: target.value }));
-  };
+  const handleChange = ({ name, value }) =>
+    changeHandlerInput(setUser, name, value);
 
   const handleSubmit = e => {
     e.preventDefault();
-    API.users.update(userId, user);
-    setAllUsers(prev =>
-      prev.map(u => {
-        if (u._id === user._id) {
-          return user;
-        }
-        return u;
-      })
-    );
+    console.log(user);
     history.goBack();
   };
 
-  if (!user) {
+  if (!user || !allProfessions || !allQualities) {
     return <Loader />;
   }
 
@@ -93,10 +68,10 @@ const EditUserPage = () => {
         label={"Выберете свою профессию"}
         name={"profession"}
         defaultValue={{
-          value: user.profession._id,
-          label: user.profession.name
+          value: getProfessionById(user.profession)._id,
+          label: getProfessionById(user.profession).name
         }}
-        options={allProfessions}
+        options={transformDataToFeild(allProfessions)}
         onChange={handleChange}
         error={errors.professions}
       />
@@ -114,12 +89,11 @@ const EditUserPage = () => {
       <MultiSelectField
         label={"Выберете качества"}
         name={"qualities"}
-        defaultValue={user.qualities.map(item => ({
-          ...item,
-          value: item._id,
-          label: item.name
-        }))}
-        options={allQualitties}
+        defaultValue={user.qualities.map(qualityId => {
+          const quality = getQualityById(qualityId);
+          return { value: quality._id, label: quality.name };
+        })}
+        options={transformDataToFeild(allQualities)}
         onChange={handleChange}
         error={errors.qualities}
       />
@@ -142,7 +116,5 @@ const EditUserPage = () => {
     </div>
   );
 };
-
-// EditUserPage.propTypes = {};
 
 export default EditUserPage;

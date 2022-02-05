@@ -32,7 +32,7 @@ SelectField.propTypes = {
   name: PropTypes.string,
   onChange: PropTypes.func,
   defaultValue: PropTypes.object,
-  options: PropTypes.array.isRequired,
+  options: PropTypes.array,
   error: PropTypes.string
 };
 

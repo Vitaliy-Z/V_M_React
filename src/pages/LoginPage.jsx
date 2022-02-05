@@ -1,11 +1,10 @@
 import React from "react";
 import { useHistory, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
-import LoginForm from "../components/LoginForm";
-import RegisterForm from "../components/RegisterForm";
 import { PATH_NAME } from "../utils/constant";
+import { LoginForm, RegisterForm } from "../components/forms";
 
-function LoginPage() {
+const LoginPage = () => {
   const { type } = useParams();
   const history = useHistory();
 
@@ -19,7 +18,7 @@ function LoginPage() {
       {type === replaceRegister ? <RegisterForm /> : <LoginForm />}
     </div>
   );
-}
+};
 
 LoginPage.propTypes = {
   allProfessions: PropTypes.object

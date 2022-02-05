@@ -1,77 +1,53 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
-import BookMark from "../common/Bookmark";
-import Qualitie from "../Qualitie";
-import API from "../../api";
-import { AllUserContext } from "../../context";
+import { Badge, Bookmark } from "../common";
+import { useProfessions } from "../../hooks/useProfessions";
+import { useQualities } from "../../hooks/useQualities";
 
-export default function User({ indx, id }) {
-  const { allUsers, setAllUsers } = useContext(AllUserContext);
-  const user = allUsers.find(u => u._id === id);
+const UserOfList = ({ ...user }) => {
+  const { getProfessionById } = useProfessions();
+  const { getQualityById } = useQualities();
 
-  const handleCheckBookmark = id => {
-    const updatedUser = allUsers.find(u => u._id === id);
-    API.users.update(id, { ...updatedUser, bookmark: !updatedUser.bookmark });
-    setAllUsers(prev =>
-      prev.map(u => {
-        if (u._id === updatedUser._id) {
-          return { ...updatedUser, bookmark: !updatedUser.bookmark };
-        }
-        return u;
-      })
-    );
+  const handleCheckBookmark = id => event => {
+    console.log(id);
   };
-  const handleDeleteUserBtn = () => {
-    API.users
-      .remove(user._id)
-      .then(data => setAllUsers(prev => prev.filter(u => u._id !== data._id)));
-  };
-
-  if (!user) {
-    return null;
-  }
+  // const handleDeleteUserBtn = id => event => {
+  //   console.log(id);
+  // };
 
   return (
     <tr>
-      <td scope="row" style={{ fontWeight: "bold" }}>
-        {indx + 1}
-      </td>
       <td>
-        <Link className="fs-6 text-dark" to={`users/${user._id}`}>
+        <Link className="fs-6" to={`users/${user._id}`}>
           {user.name}
         </Link>
       </td>
       <td>
-        {user.qualities.map(qualiti => (
-          <Qualitie key={qualiti._id} {...qualiti} />
+        {user.qualities.map(qualityId => (
+          <Badge key={qualityId} {...getQualityById(qualityId)} />
         ))}
       </td>
-      <td>{user.profession.name}</td>
+      <td>{getProfessionById(user.profession)?.name}</td>
       <td>{user.completedMeetings}</td>
       <td>{user.rate} / 5</td>
       <td>
-        <BookMark
-          id={user._id}
-          bookmark={user.bookmark}
-          handleCheckBookmark={handleCheckBookmark}
+        <Bookmark
+          isInBookmark={user.bookmark}
+          onClick={handleCheckBookmark(user._id)}
         />
       </td>
-      <td>
+      {/* <td>
         <button
           type="button"
           className="btn btn-danger"
-          onClick={handleDeleteUserBtn}
+          onClick={handleDeleteUserBtn(user._id)}
           id={user._id}
         >
           Удалить
         </button>
-      </td>
+      </td> */}
     </tr>
   );
-}
-
-User.propTypes = {
-  indx: PropTypes.number,
-  id: PropTypes.string.isRequired
 };
+
+export default UserOfList;

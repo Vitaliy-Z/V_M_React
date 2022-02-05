@@ -1,7 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Badge } from "../common";
+import { useQualities } from "../../hooks/useQualities";
 
 const UserQualitiesCard = ({ qualities }) => {
+  const { getQualityById } = useQualities();
   return (
     <div className="card mb-3">
       <div className="card-body d-flex flex-column justify-content-center text-center">
@@ -9,10 +12,8 @@ const UserQualitiesCard = ({ qualities }) => {
           <span>Качества</span>
         </h5>
         <p className="card-text">
-          {qualities.map(q => (
-            <span className={`badge bg-${q.color} me-1`} key={q._id}>
-              {q.name}
-            </span>
+          {qualities.map(qualityId => (
+            <Badge key={qualityId} {...getQualityById(qualityId)} />
           ))}
         </p>
       </div>

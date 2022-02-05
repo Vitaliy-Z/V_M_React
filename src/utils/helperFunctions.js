@@ -54,3 +54,31 @@ export const transformTime = time => {
     return "30 минут назад";
   }
 };
+
+export const changeHandlerInput = (setData, name, value) =>
+  setData(prev => {
+    if (typeof value === "string" || typeof value === "boolean") {
+      return {
+        ...prev,
+        [name]: value
+      };
+    }
+    if (typeof value === "boolean") {
+      return {
+        ...prev,
+        [name]: value
+      };
+    }
+    if (Array.isArray(value)) {
+      return {
+        ...prev,
+        [name]: value.map(({ value }) => value)
+      };
+    }
+    if (typeof value === "object") {
+      return {
+        ...prev,
+        [name]: value.value
+      };
+    }
+  });

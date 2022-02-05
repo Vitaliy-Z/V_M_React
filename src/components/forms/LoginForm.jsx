@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-
-import { PATH_NAME } from "../utils/constant";
-import validator from "../utils/validator";
-import CheckField from "./common/CheckField";
-import TextFeild from "./common/TextFeild";
+import { Link, useHistory } from "react-router-dom";
+import { PATH_NAME } from "../../utils/constant";
+import { changeHandlerInput } from "../../utils/helperFunctions";
+import validator from "../../utils/validator";
+import { CheckField, TextFeild } from "../common";
 
 const LoginForm = () => {
+  const history = useHistory();
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -17,17 +17,13 @@ const LoginForm = () => {
   useEffect(() => {
     setErrors(validator(data));
   }, [data]);
+  const handleChange = ({ name, value }) =>
+    changeHandlerInput(setData, name, value);
 
-  const handleChange = target => {
-    let value = target.value;
-    if (typeof target.value === "string") {
-      value = target.value.trim();
-    }
-    setData(prev => ({ ...prev, [target.name]: value }));
-  };
   const handleSubmit = e => {
     e.preventDefault();
     console.log(data);
+    history.push(PATH_NAME.main);
   };
 
   return (

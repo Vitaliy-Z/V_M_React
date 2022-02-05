@@ -1,6 +1,6 @@
 import React from "react";
 
-export const Spiner = () => {
+const Spiner = () => {
   return (
     <div className="d-flex justify-content-center">
       <div className="spinner-border text-info mx-auto" role="status">
@@ -10,7 +10,7 @@ export const Spiner = () => {
   );
 };
 
-export const Loader = () => {
+const Loader = () => {
   return (
     <div
       className="container position-absolute top-50 start-50"
@@ -23,3 +23,5 @@ export const Loader = () => {
     </div>
   );
 };
+
+export default Loader;

@@ -2,9 +2,6 @@ export const INITION_SORT_BY = { itr: "name", order: "asc" };
 export const PAGE_SIZE = 5;
 export const VALUES_OF_TH = [
   {
-    name: "№"
-  },
-  {
     name: "Имя",
     data: "name"
   },
@@ -13,7 +10,7 @@ export const VALUES_OF_TH = [
   },
   {
     name: "Профессия",
-    data: "profession.name"
+    data: "profession"
   },
   {
     name: "Встречи",
@@ -26,10 +23,6 @@ export const VALUES_OF_TH = [
   {
     name: "Избранное",
     data: "bookmark"
-  },
-  // Кнопка Delete
-  {
-    name: ""
   }
 ];
 export const PATH_NAME = {

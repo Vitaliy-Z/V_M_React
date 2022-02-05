@@ -1,11 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-export default function Qualitie({ color, name }) {
+const Badge = ({ color, name }) => {
   return <span className={`badge bg-${color} m-1`}>{name}</span>;
-}
-
-Qualitie.propTypes = {
-  color: PropTypes.string,
-  name: PropTypes.string.isRequired
 };
+
+Badge.propTypes = {
+  color: PropTypes.string,
+  name: PropTypes.string
+};
+
+export default Badge;

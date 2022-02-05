@@ -1,7 +1,7 @@
 import React from "react";
 import _ from "lodash";
 import PropTypes from "prop-types";
-import { PAGE_SIZE } from "../utils/constant";
+import { PAGE_SIZE } from "../../utils/constant";
 
 export default function Pagination({ countItems, currentPage, onChangePage }) {
   const paginationItems = _.range(1, _.ceil(countItems / PAGE_SIZE) + 1);

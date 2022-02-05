@@ -1,13 +1,11 @@
-import React, { useContext, useState } from "react";
-import PropTypes from "prop-types";
-import { AllUserContext } from "../../context";
-import SelectField from "../common/SelectField";
-import TextAreaFeild from "../common/TextAreaFeild";
-import API from "../../api";
+import React, { useState } from "react";
+// import PropTypes from "prop-types";
+import { SelectField, TextAreaFeild } from "../common";
+import { useUsers } from "../../hooks/useUsers";
 
-const UserComentForm = ({ userId, setComments }) => {
-  const { allUsers } = useContext(AllUserContext);
+const UserComentForm = () => {
   const [data, setData] = useState({});
+  const { allUsers } = useUsers();
 
   const arrOfNameUsers =
     allUsers && allUsers.map(user => ({ label: user.name, value: user._id }));
@@ -21,11 +19,8 @@ const UserComentForm = ({ userId, setComments }) => {
   };
 
   const handleSubmit = () => {
-    API.comments
-      .add({ ...data, pageId: userId })
-      .then(data => setComments(prev => [...prev, data]));
-
-    // Не могу сбросить селект
+    console.log(data);
+    // Не могу сбросить Select
     setData(prev => ({ ...prev, content: "" }));
   };
 
@@ -61,9 +56,6 @@ const UserComentForm = ({ userId, setComments }) => {
   );
 };
 
-UserComentForm.propTypes = {
-  userId: PropTypes.string,
-  setComments: PropTypes.func
-};
+UserComentForm.propTypes = {};
 
 export default UserComentForm;
