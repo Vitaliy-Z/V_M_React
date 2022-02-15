@@ -4,7 +4,7 @@ import { userEndpoint } from "./config.json";
 const userService = {
   get: async () => {
     const { data } = await httpService.get(userEndpoint);
-    return data?.content;
+    return data;
   }
 };
 

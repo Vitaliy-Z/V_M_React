@@ -1,6 +1,7 @@
 {
-  "apiEndpoint": "http://localhost:4000/api/v1/",
-  "userEndpoint": "user/",
-  "professionEndpoint": "profession/",
-  "qualityEndpoint": "quality/"
+  "apiEndpoint": "https://fast-company-997c7-default-rtdb.europe-west1.firebasedatabase.app/",
+  "isFireBase": true,
+  "userEndpoint": "users/",
+  "professionEndpoint": "professions/",
+  "qualityEndpoint": "qualities/"
 }

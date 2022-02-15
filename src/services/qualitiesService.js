@@ -4,7 +4,7 @@ import { qualityEndpoint } from "./config.json";
 const qualityService = {
   get: async () => {
     const { data } = await httpService.get(qualityEndpoint);
-    return data?.content;
+    return data;
   }
 };
 
