@@ -31,3 +31,8 @@ export const PATH_NAME = {
   register: "/register",
   users: "/users"
 };
+export const TOKEN_KEY = {
+  token: "jwt-token",
+  refreshToken: "jwt-refresh-token",
+  expires: "jwt-expires"
+};

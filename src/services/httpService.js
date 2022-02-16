@@ -3,9 +3,11 @@ import { toast } from "react-toastify";
 import { updateObjToArr } from "../utils/helperFunctions";
 import { apiEndpoint, isFireBase } from "./config.json";
 
-axios.defaults.baseURL = apiEndpoint;
+const httpClient = axios.create({
+  baseURL: apiEndpoint
+});
 
-axios.interceptors.request.use(
+httpClient.interceptors.request.use(
   config => {
     if (isFireBase) {
       config.url =
@@ -18,7 +20,7 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-axios.interceptors.response.use(
+httpClient.interceptors.response.use(
   res => {
     if (isFireBase) {
       res.data = res.data ? updateObjToArr(res.data) : [];
@@ -39,9 +41,9 @@ axios.interceptors.response.use(
   }
 );
 const httpService = {
-  get: axios.get,
-  post: axios.post,
-  put: axios.put,
-  delete: axios.delete
+  get: httpClient.get,
+  post: httpClient.post,
+  put: httpClient.put,
+  delete: httpClient.delete
 };
 export default httpService;

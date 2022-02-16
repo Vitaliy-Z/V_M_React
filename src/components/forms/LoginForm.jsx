@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { PATH_NAME } from "../../utils/constant";
+// import { toast } from "react-toastify";
+import { useAuth } from "../../hooks/useAuth";
+import { PATH_NAME, TOKEN_KEY } from "../../utils/constant";
 import { changeHandlerInput } from "../../utils/helperFunctions";
 import validator from "../../utils/validator";
 import { CheckField, TextFeild } from "../common";
 
 const LoginForm = () => {
   const history = useHistory();
+  const { singIn } = useAuth();
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -19,11 +22,26 @@ const LoginForm = () => {
   }, [data]);
   const handleChange = ({ name, value }) =>
     changeHandlerInput(setData, name, value);
-
-  const handleSubmit = e => {
+  const setTokensToLocalStorage = ({
+    idToken,
+    refreshToken,
+    expiresIn = 3600
+  }) => {
+    const expiresDate = new Date().getTime() + expiresIn * 1000;
+    localStorage.setItem(TOKEN_KEY.token, idToken);
+    localStorage.setItem(TOKEN_KEY.refreshToken, refreshToken);
+    localStorage.setItem(TOKEN_KEY.expires, expiresDate);
+  };
+  const handleSubmit = async e => {
     e.preventDefault();
-    console.log(data);
-    history.push(PATH_NAME.main);
+    const response = await singIn(data);
+    if (typeof response === "string") {
+      console.log("~ resERROR", response);
+      // toast(response); // Не работает toast
+    } else {
+      setTokensToLocalStorage(response);
+      history.push(PATH_NAME.main);
+    }
   };
 
   return (
