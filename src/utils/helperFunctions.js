@@ -1,3 +1,5 @@
+import { TOKEN_KEY } from "./constant";
+
 export const updateObjToArr = obj => {
   if (!Array.isArray(obj)) {
     const array = Object.keys(obj).map(item => obj[item]);
@@ -82,3 +84,14 @@ export const changeHandlerInput = (setData, name, value) =>
       };
     }
   });
+
+export const setTokensToLocalStorage = ({
+  idToken,
+  refreshToken,
+  expiresIn = 3600
+}) => {
+  const expiresDate = new Date().getTime() + expiresIn * 1000;
+  localStorage.setItem(TOKEN_KEY.token, idToken);
+  localStorage.setItem(TOKEN_KEY.refreshToken, refreshToken);
+  localStorage.setItem(TOKEN_KEY.expires, expiresDate);
+};

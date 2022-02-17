@@ -6,6 +6,7 @@ import { PATH_NAME } from "../../utils/constant";
 import validator from "../../utils/validator";
 import {
   changeHandlerInput,
+  setTokensToLocalStorage,
   transformDataToFeild
 } from "../../utils/helperFunctions";
 import {
@@ -18,9 +19,12 @@ import {
 } from "../common";
 import { useProfessions } from "../../hooks/useProfessions";
 import { useQualities } from "../../hooks/useQualities";
+import { useAuth } from "../../hooks/useAuth";
+import { toast } from "react-toastify";
 
 const RegisterForm = () => {
   const history = useHistory();
+  const { singUp } = useAuth();
   const [data, setData] = useState({
     _id: uuidv4(),
     name: "",
@@ -32,7 +36,8 @@ const RegisterForm = () => {
     completedMeetings: 0,
     rate: 5,
     bookmark: false,
-    license: false
+    license: false,
+    remember: false
   });
   const [errors, setErrors] = useState({});
 
@@ -46,10 +51,20 @@ const RegisterForm = () => {
   const handleChange = ({ name, value }) =>
     changeHandlerInput(setData, name, value);
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     console.log(data);
-    history.push(PATH_NAME.main);
+    const response = await singUp(data);
+    if (typeof response === "string") {
+      console.log("~ resERROR", response);
+      toast.error(response); // Не работает toast
+    } else {
+      console.log("~ resSUCCESS", response);
+      if (data.remember) {
+        setTokensToLocalStorage(response);
+      }
+      history.push(PATH_NAME.main);
+    }
   };
 
   if (!allProfessions || !allQualities) {
@@ -122,6 +137,13 @@ const RegisterForm = () => {
           <span>
             Подтвердите <a href=" ">лицензию</a>
           </span>
+        </CheckField>
+        <CheckField
+          name={"remember"}
+          value={data.remember}
+          onChange={handleChange}
+        >
+          <span>Оставаться в сети</span>
         </CheckField>
         <button
           type="submit"

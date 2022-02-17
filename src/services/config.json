@@ -5,5 +5,5 @@
   "professionEndpoint": "professions/",
   "qualityEndpoint": "qualities/",
   "singInEndpoint": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=",
-  "ApiKeyFireBase": "AIzaSyBCU8AyvnTM0KQ0g6XiSDRj36H9HSrHjVA"
+  "singUpEndpoint": "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key="
 }

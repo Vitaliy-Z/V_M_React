@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react";
 import PropTypes from "prop-types";
-import { singInEndpoint, ApiKeyFireBase } from "../services/config.json";
+import { singInEndpoint, singUpEndpoint } from "../services/config.json";
 import axios from "axios";
 
 const AuthContext = createContext();
@@ -11,20 +11,40 @@ export const useAuth = () => {
 };
 
 const AuthProvider = ({ children }) => {
+  const singUp = async ({ email, password }) => {
+    try {
+      const data = await httpClientAuth.post(
+        singUpEndpoint + process.env.REACT_APP_FIREBASE_KEY,
+        {
+          email,
+          password,
+          returnSecureToken: true
+        }
+      );
+      return data;
+    } catch (error) {
+      return error.response.data.error.message;
+    }
+  };
   const singIn = async ({ email, password }) => {
     try {
-      const data = await httpClientAuth.post(singInEndpoint + ApiKeyFireBase, {
-        email,
-        password,
-        returnSecureToken: true
-      });
+      const data = await httpClientAuth.post(
+        singInEndpoint + process.env.REACT_APP_FIREBASE_KEY,
+        {
+          email,
+          password,
+          returnSecureToken: true
+        }
+      );
       return data;
     } catch (error) {
       return error.response.data.error.message;
     }
   };
   return (
-    <AuthContext.Provider value={{ singIn }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ singIn, singUp }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 
