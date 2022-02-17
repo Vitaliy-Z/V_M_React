@@ -30,9 +30,7 @@ const LoginForm = () => {
     e.preventDefault();
     const response = await singIn(data);
     if (typeof response === "string") {
-      console.log("~ resERROR", response);
-      toast.error(response); // Не работает toast
-    } else {
+      toast.error("Неверный логин или пароль");
       setTokensToLocalStorage(response);
       history.push(PATH_NAME.main);
     }

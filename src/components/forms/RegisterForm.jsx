@@ -53,13 +53,10 @@ const RegisterForm = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    console.log(data);
     const response = await singUp(data);
     if (typeof response === "string") {
-      console.log("~ resERROR", response);
-      toast.error(response); // Не работает toast
+      toast.error("Введенные данные существуют или некорректные");
     } else {
-      console.log("~ resSUCCESS", response);
       if (data.remember) {
         setTokensToLocalStorage(response);
       }

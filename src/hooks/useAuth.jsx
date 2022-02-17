@@ -1,7 +1,8 @@
 import React, { createContext, useContext } from "react";
 import PropTypes from "prop-types";
-import { singInEndpoint, singUpEndpoint } from "../services/config.json";
 import axios from "axios";
+import { userService } from "../services";
+import { singInEndpoint, singUpEndpoint } from "../services/config.json";
 
 const AuthContext = createContext();
 const httpClientAuth = axios.create();
@@ -11,7 +12,7 @@ export const useAuth = () => {
 };
 
 const AuthProvider = ({ children }) => {
-  const singUp = async ({ email, password }) => {
+  const singUp = async ({ email, password, ...rest }) => {
     try {
       const data = await httpClientAuth.post(
         singUpEndpoint + process.env.REACT_APP_FIREBASE_KEY,
@@ -21,6 +22,12 @@ const AuthProvider = ({ children }) => {
           returnSecureToken: true
         }
       );
+      await userService.create({
+        _id: data.localId,
+        email,
+        password,
+        ...rest
+      });
       return data;
     } catch (error) {
       return error.response.data.error.message;

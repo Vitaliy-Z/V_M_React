@@ -16,6 +16,7 @@ import {
   QualityProvider,
   AuthProvider
 } from "./hooks";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
